@@ -3,7 +3,7 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import cors from 'cors';
 import paypal from '@paypal/checkout-server-sdk';
-
+import userRoutes from "./routes/userRoutes.js";
 // Importamos desde los submódulos específicos
 const { SandboxEnvironment, PayPalHttpClient } = paypal.core;
 const { OrdersCreateRequest, OrdersCaptureRequest } = paypal.orders;
@@ -27,6 +27,8 @@ const transporter = nodemailer.createTransport({
 // Almacenar códigos OTP con expiración
 const otpStore = {};
 
+
+app.use("/user", userRoutes);
 // Generar un código OTP de 6 dígitos
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();

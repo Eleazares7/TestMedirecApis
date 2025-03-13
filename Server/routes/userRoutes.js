@@ -12,4 +12,6 @@ router.get('/usuarios', async (req, res) => {
     }
 });
 
+
+
 export default router;
