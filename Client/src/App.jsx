@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
+import './App.css';
 
 function App() {
   const [email, setEmail] = useState('');
@@ -16,10 +17,10 @@ function App() {
       const response = await axios.post('http://localhost:3000/2fa/send', { email });
       if (response.data.success) {
         setStep('verify');
-        setMessage('Código enviado a tu correo. Revisa tu bandeja de entrada o spam.');
+        setMessage('✅ Código enviado a tu correo. Revisa tu bandeja de entrada o spam.');
       }
     } catch (error) {
-      setMessage('Error al enviar el código: ' + (error.response?.data?.error || error.message));
+      setMessage('❌ Error al enviar el código: ' + (error.response?.data?.error || error.message));
     }
   };
 
@@ -30,53 +31,57 @@ function App() {
     try {
       const response = await axios.post('http://localhost:3000/2fa/verify', { email, code });
       if (response.data.success) {
-        setMessage('¡Verificación exitosa! Bienvenido.');
+        setMessage('🎉 ¡Verificación exitosa! Bienvenido.');
       } else {
-        setMessage('Código inválido. Intenta de nuevo.');
+        setMessage('⚠️ Código inválido. Intenta de nuevo.');
       }
     } catch (error) {
-      setMessage('Error al verificar: ' + (error.response?.data?.error || error.message));
+      setMessage('❌ Error al verificar: ' + (error.response?.data?.error || error.message));
     }
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100">
+    <Container fluid className="app-container">
       <Row>
         <Col md={6} lg={4}>
-          <Card className="shadow-sm">
+          <Card className="auth-card">
             <Card.Body>
-              <Card.Title className="text-center mb-4">Verificación en Dos Pasos</Card.Title>
+              <Card.Title className="auth-card-title">
+                🔒 Verificación en Dos Pasos
+              </Card.Title>
 
               {step === 'email' ? (
-                <Form onSubmit={handleSendOTP}>
+                <Form onSubmit={handleSendOTP} className="auth-form">
                   <Form.Group className="mb-3" controlId="email">
-                    <Form.Label>Correo Electrónico</Form.Label>
+                    <Form.Label className="auth-form-label">Correo Electrónico</Form.Label>
                     <Form.Control
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="tu_correo@example.com"
                       required
+                      className="auth-form-input"
                     />
                   </Form.Group>
-                  <Button variant="primary" type="submit" className="w-100">
-                    Enviar Código
+                  <Button variant="primary" type="submit" className="w-100 auth-button">
+                    📩 Enviar Código
                   </Button>
                 </Form>
               ) : (
-                <Form onSubmit={handleVerifyOTP}>
+                <Form onSubmit={handleVerifyOTP} className="auth-form">
                   <Form.Group className="mb-3" controlId="code">
-                    <Form.Label>Código OTP</Form.Label>
+                    <Form.Label className="auth-form-label">Código OTP</Form.Label>
                     <Form.Control
                       type="text"
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                       placeholder="Ingresa el código"
                       required
+                      className="auth-form-input"
                     />
                   </Form.Group>
-                  <Button variant="success" type="submit" className="w-100">
-                    Verificar
+                  <Button variant="success" type="submit" className="w-100 auth-button">
+                    ✅ Verificar
                   </Button>
                 </Form>
               )}
@@ -88,7 +93,7 @@ function App() {
                       ? 'danger'
                       : 'success'
                   }
-                  className="mt-3"
+                  className="auth-alert"
                 >
                   {message}
                 </Alert>
